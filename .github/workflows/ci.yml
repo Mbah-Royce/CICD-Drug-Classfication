@@ -9,7 +9,7 @@ on:
 permissions: write-all
 jobs:
   build:
-    runs-on: ubuntu-22.04 
+    runs-on: ubuntu-20.04
     container: docker://ghcr.io/iterative/cml:0-dvc2-base1
     steps:
       - uses: actions/checkout@v4
