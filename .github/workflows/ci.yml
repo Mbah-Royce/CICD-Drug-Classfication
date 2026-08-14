@@ -13,6 +13,9 @@ jobs:
     container: docker://ghcr.io/iterative/cml:0-dvc2-base1
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v7 
+        with:
+          python-version: 'pypy3.10' 
       - name: Install Packages
         run: make install
       - name: Format
