@@ -6,7 +6,7 @@ format:
 	black *.py
 
 train:
-	python train.py
+	python3 train.py
 
 eval:
 	echo "## Model Metrics" > report.md
