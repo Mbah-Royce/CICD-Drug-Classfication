@@ -1,6 +1,6 @@
 # 🚀 Machine Learning Model Deployment with CI/CD
 
-A complete end-to-end Machine Learning project demonstrating the development, testing, continuous integration, continuous deployment, and production deployment of a machine learning model.
+A complete simple end-to-end Machine Learning project demonstrating the development, continuous integration, continuous deployment, and production deployment of a machine learning model.
 
 The project uses **GitHub Actions** to automate the CI/CD pipeline and deploys the trained machine learning application to **Hugging Face Spaces**.
 
@@ -17,39 +17,6 @@ The main objectives of the project are:
 * Implement Continuous Deployment (CD).
 * Automatically deploy the application to Hugging Face.
 
-## 🏗️ Project Architecture
-
-The workflow follows the architecture below:
-
-```text
-Data
-  │
-  ▼
-Data Preprocessing
-  │
-  ▼
-Machine Learning Model Training
-  │
-  ▼
-Model Evaluation
-  │
-  ▼
-GitHub Repository
-  │
-  ▼
-GitHub Actions CI/CD Pipeline
-  │
-  ├── Run Tests
-  ├── Validate Code
-  ├── Build Application
-  │
-  ▼
-Deploy to Hugging Face
-  │
-  ▼
-Live Machine Learning Application
-```
-
 ## 🛠️ Technologies Used
 
 * **Python** – Core programming language.
@@ -57,28 +24,6 @@ Live Machine Learning Application
 * **GitHub** – Version control and source code management.
 * **GitHub Actions** – Continuous Integration and Continuous Deployment automation.
 * **Hugging Face Spaces** – Deployment and hosting platform.
-
-## 📂 Project Structure
-
-```text
-├── .github/
-│   └── workflows/
-│       └── ci-cd.yml
-│
-├── src/
-│   ├── data_preprocessing.py
-│   ├── train.py
-│   ├── predict.py
-│   └── utils.py
-│
-├── tests/
-│   └── test_model.py
-│
-├── app.py
-├── requirements.txt
-├── README.md
-└── .gitignore
-```
 
 ## 🤖 Machine Learning Workflow
 
@@ -99,7 +44,7 @@ The raw dataset is cleaned and transformed before being used for training. This 
 The processed dataset is used to train the Machine Learning model.
 
 ```bash
-python src/train.py
+python train.py
 ```
 
 The trained model is then saved and used by the application for predictions.
@@ -108,15 +53,10 @@ The trained model is then saved and used by the application for predictions.
 
 The trained model is evaluated using appropriate performance metrics.
 
-Depending on the problem type, these may include:
+These include:
 
 * Accuracy
 * Precision
-* Recall
-* F1 Score
-* Mean Absolute Error
-* Mean Squared Error
-* R² Score
 
 ## ⚙️ CI/CD Pipeline
 
@@ -128,46 +68,52 @@ The pipeline is triggered when changes are pushed to the repository.
 
 The CI pipeline performs tasks such as:
 
-* Installing project dependencies.
-* Running automated tests.
-* Validating the application.
-* Checking for errors before deployment.
-
+* Installing project dependencies
+* Train model
+  
 Example workflow:
 
 ```yaml
-name: CI/CD Pipeline
-
-on:
+name: Continuous Integration
+on: 
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
 
+permissions: write-all
 jobs:
-  test-and-deploy:
+  build:
     runs-on: ubuntu-latest
-
+    # container: docker://ghcr.io/iterative/cml:0-dvc2-base1
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
-
-      - name: Install Dependencies
-        run: |
-          pip install -r requirements.txt
-
-      - name: Run Tests
-        run: |
-          pytest
+          python-version: '3.10' 
+          architecture: 'x64' 
+      - name: Install Packages
+        run: make install
+      - name: Format
+        run : make format
+      - name: Train
+        run: make train
+      - name: Evaluation
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: make eval
+      - name: Update-Branch
+        env:
+          NAME: ${{ secrets.USER_NAME }}
+          EMAIL: ${{ secrets.USER_EMAIL }}
+        run: make update-branch USER_NAME=$NAME USER_EMAIL=$EMAIL
+          
 ```
 
 ### Continuous Deployment
 
-After all tests pass successfully, the application is automatically deployed to **Hugging Face Spaces**.
+After successful integration, the application is automatically deployed to **Hugging Face Spaces**.
 
 This ensures that the latest validated version of the project is deployed without requiring manual intervention.
 
@@ -181,10 +127,7 @@ GitHub Actions Triggered
 Install Dependencies
     │
     ▼
-Run Tests
-    │
-    ▼
-Build / Validate Application
+Build Application
     │
     ▼
 Deploy to Hugging Face
@@ -202,21 +145,8 @@ The deployment process is automated through GitHub Actions.
 
 1. Push changes to the `main` branch.
 2. GitHub Actions automatically starts the CI/CD workflow.
-3. Tests and validation checks are executed.
-4. If the workflow succeeds, the latest version is deployed to Hugging Face.
-5. The updated application becomes available online.
-
-## 🔐 GitHub Secrets
-
-Sensitive credentials should never be stored directly in the repository.
-
-The following secrets can be configured in GitHub:
-
-```text
-HF_TOKEN
-```
-
-These secrets are used by GitHub Actions to authenticate with Hugging Face during deployment.
+3. If the workflow succeeds, the latest version is deployed to Hugging Face.
+4. The updated application becomes available online.
 
 ## 💻 Installation
 
@@ -261,15 +191,7 @@ pip install -r requirements.txt
 Run the application:
 
 ```bash
-python app.py
-```
-
-## 🧪 Running Tests
-
-Run the automated tests using:
-
-```bash
-pytest
+python train.py
 ```
 
 ## 🎯 Key Features
@@ -277,7 +199,6 @@ pytest
 * 🤖 End-to-end Machine Learning workflow.
 * 🧹 Automated data preprocessing.
 * 📊 Model training and evaluation.
-* 🧪 Automated testing.
 * 🔄 Continuous Integration using GitHub Actions.
 * 🚀 Continuous Deployment automation.
 * 🤗 Deployment on Hugging Face Spaces.
@@ -288,6 +209,7 @@ pytest
 Potential improvements for the project include:
 
 * Adding experiment tracking.
+* Adding automated testing.
 * Implementing model versioning.
 * Adding data validation.
 * Integrating monitoring for model performance.
@@ -297,9 +219,5 @@ Potential improvements for the project include:
 * Adding API endpoints for predictions.
 
 Machine Learning | MLOps | Data Science
-
-## 📄 License
-
----
 
 ⭐ If you found this project useful, consider giving the repository a star!
