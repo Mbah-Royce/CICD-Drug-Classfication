@@ -222,7 +222,7 @@ Machine Learning | MLOps | Data Science
 
 ⭐ If you found this project useful, consider giving the repository a star!
 
-** Note this was done for study purposes and care should be taken when code or some aspect of the project is to be used.**
+**Note: this project was done for study purposes and care should be taken when code or some aspect of the project is to be used.**
 
 ## Resources
 https://www.datacamp.com/tutorial/ci-cd-for-machine-learning
